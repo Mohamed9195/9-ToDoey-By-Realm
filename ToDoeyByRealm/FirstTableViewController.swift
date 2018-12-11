@@ -8,8 +8,11 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class FirstTableViewController: UITableViewController {
+
+
+class FirstTableViewController: SwipeViewController {
 
     let realm = try! Realm()
     
@@ -26,6 +29,11 @@ class FirstTableViewController: UITableViewController {
         tableView.addGestureRecognizer(longPressgester)
         
         loadCategory()
+        tableView.rowHeight = 65.0
+        
+        tableView.separatorStyle = .none
+        
+        
     }
 
     @IBAction func addCategory(_ sender: UIBarButtonItem) {
@@ -39,6 +47,8 @@ class FirstTableViewController: UITableViewController {
                 
                 let newCategory = Category()
                 newCategory.name = textCell.text!
+                newCategory.colour = UIColor.randomFlat.hexValue()
+                
                 self.save(category: newCategory)
                 
             }
@@ -58,12 +68,16 @@ class FirstTableViewController: UITableViewController {
         return categoryArray?.count ?? 1
     }
     
-    
+
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TodocategoryCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
+        
+        
         
         cell.textLabel?.text = categoryArray?[indexPath.row].name  ??  "No Categories Add Yet"
         
+        cell.backgroundColor = UIColor(hexString: categoryArray?[indexPath.row].colour ?? "1BA3E5")
+        cell.textLabel?.textColor = (UIColor(contrastingBlackOrWhiteColorOn:cell.backgroundColor!, isFlat:true))
         return cell
     }
     
@@ -91,27 +105,28 @@ class FirstTableViewController: UITableViewController {
     }
     
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath){
-        if editingStyle == .delete {
-            
-            if let item = categoryArray?[indexPath.row] {
-                
-                do{
-                    try realm.write {
-                         realm.delete(item.items) // delete refernce to data in item table
-                        realm.delete(item)
-                       
-                    }
-                    
-                }catch{
-                    print("Error Savinge done status\(error)")
-                }
-                
-            }
-            tableView.reloadData()
-        }
-    }
     
+    
+    
+//
+//    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath){
+//        if editingStyle == .delete {
+//                    if let item = categoryArray?[indexPath.row] {
+//                            do{
+//                                try realm.write {
+//                                     realm.delete(item.items) // delete refernce to data in item table
+//                                    realm.delete(item)
+//                                }
+//
+//                            }catch{
+//                                print("Error Savinge done status\(error)")
+//                            }
+//                    }
+//
+//                    tableView.reloadData()
+//        }
+//    }
+//
     
     
     
@@ -140,6 +155,30 @@ class FirstTableViewController: UITableViewController {
     }
     
     
+    //MARK: - Delete Data from swipe
+    
+    override  func DeletModel(at indexPath: IndexPath) {
+        
+                    if let item = self.categoryArray?[indexPath.row] {
+                        do{
+                            try self.realm.write {
+                                self.realm.delete(item.items) // delete refernce to data in item table
+                                self.realm.delete(item)
+                            }
+        
+                        }catch{
+                            print("Error Savinge done status\(error)")
+                        }
+                    }
+        
+        
+    }
+    
+ 
+  
+    
+    
+    
     @objc func editCategory(_ gestureRecognizer: UILongPressGestureRecognizer) {
         if gestureRecognizer.state == .ended {
             let touchPoint = gestureRecognizer.location(in: self.tableView)
@@ -164,8 +203,6 @@ class FirstTableViewController: UITableViewController {
                     
                 }))
                 
-                alert.addTextField { (alertTextField) in alertTextField.placeholder = self.categoryArray?[indexpath.row].name ?? "not chang"; textcell = alertTextField
-                }
                 
                 present(alert, animated: true, completion: nil)
             }
@@ -179,4 +216,5 @@ class FirstTableViewController: UITableViewController {
     
     
 }
+
 

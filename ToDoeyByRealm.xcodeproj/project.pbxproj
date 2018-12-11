@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7DFF3621218CA274006BCA8A /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFF3620218CA274006BCA8A /* InfoViewController.swift */; };
+		7DFF3623218CA2FF006BCA8A /* SwipeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFF3622218CA2FF006BCA8A /* SwipeViewController.swift */; };
+		7DFF3625218CB028006BCA8A /* Info.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFF3624218CB028006BCA8A /* Info.swift */; };
 		7DFFFBCE218B952F00EB66F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFFFBCD218B952F00EB66F6 /* AppDelegate.swift */; };
 		7DFFFBD3218B952F00EB66F6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DFFFBD1218B952F00EB66F6 /* Main.storyboard */; };
 		7DFFFBD5218B953100EB66F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DFFFBD4218B953100EB66F6 /* Assets.xcassets */; };
@@ -20,6 +23,9 @@
 
 /* Begin PBXFileReference section */
 		0568771B21470D577F47D746 /* Pods_ToDoeyByRealm.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ToDoeyByRealm.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7DFF3620218CA274006BCA8A /* InfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
+		7DFF3622218CA2FF006BCA8A /* SwipeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeViewController.swift; sourceTree = "<group>"; };
+		7DFF3624218CB028006BCA8A /* Info.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Info.swift; sourceTree = "<group>"; };
 		7DFFFBCA218B952F00EB66F6 /* ToDoeyByRealm.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoeyByRealm.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DFFFBCD218B952F00EB66F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7DFFFBD2218B952F00EB66F6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -98,8 +104,10 @@
 		7DFFFBEA218B998100EB66F6 /* Controller */ = {
 			isa = PBXGroup;
 			children = (
+				7DFF3622218CA2FF006BCA8A /* SwipeViewController.swift */,
 				7DFFFBDF218B960100EB66F6 /* FirstTableViewController.swift */,
 				7DFFFBE1218B960E00EB66F6 /* secoundTableViewController.swift */,
+				7DFF3620218CA274006BCA8A /* InfoViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -109,6 +117,7 @@
 			children = (
 				7DFFFBE5218B992200EB66F6 /* Category.swift */,
 				7DFFFBE3218B991700EB66F6 /* Item.swift */,
+				7DFF3624218CB028006BCA8A /* Info.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -199,15 +208,19 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-ToDoeyByRealm/Pods-ToDoeyByRealm-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/ChameleonFramework/ChameleonFramework.framework",
 				"${BUILT_PRODUCTS_DIR}/Realm/Realm.framework",
 				"${BUILT_PRODUCTS_DIR}/RealmSwift/RealmSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/SwipeCellKit/SwipeCellKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChameleonFramework.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Realm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RealmSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SwipeCellKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -244,9 +257,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				7DFFFBE4218B991700EB66F6 /* Item.swift in Sources */,
+				7DFF3625218CB028006BCA8A /* Info.swift in Sources */,
 				7DFFFBE6218B992200EB66F6 /* Category.swift in Sources */,
 				7DFFFBE2218B960E00EB66F6 /* secoundTableViewController.swift in Sources */,
 				7DFFFBE0218B960100EB66F6 /* FirstTableViewController.swift in Sources */,
+				7DFF3621218CA274006BCA8A /* InfoViewController.swift in Sources */,
+				7DFF3623218CA2FF006BCA8A /* SwipeViewController.swift in Sources */,
 				7DFFFBCE218B952F00EB66F6 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -395,6 +411,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JNP78QVJKX;
 				INFOPLIST_FILE = ToDoeyByRealm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -413,6 +430,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = JNP78QVJKX;
 				INFOPLIST_FILE = ToDoeyByRealm/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

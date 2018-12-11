@@ -8,9 +8,13 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
-class secoundTableViewController: UITableViewController {
 
+class secoundTableViewController: SwipeViewController {
+
+    var pathToInfo = 0
+    
     let realm = try! Realm()
     
     var  todoItems: Results<Item>?
@@ -22,10 +26,12 @@ class secoundTableViewController: UITableViewController {
         }
     }
     
-   
+ 
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
+       self.tableView.reloadData()
         print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         
@@ -33,8 +39,45 @@ class secoundTableViewController: UITableViewController {
         let longpress = UILongPressGestureRecognizer(target: self, action: #selector(self.editCell))
         tableView.addGestureRecognizer(longpress)
 
+        tableView.rowHeight = 65.0
+        
+       
+        
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        
+        title = selectedCategory?.name
+        
+        guard let colourHex = selectedCategory?.colour else { fatalError() }
+        
+        updateNavBar(withHexCode: colourHex)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        
+        updateNavBar(withHexCode: "1D9BF6")
+        
+    }
+    
+    //MARK: - Nav Bar Setup Methods
+    
+    func updateNavBar(withHexCode colourHexCode: String){
+        
+        guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
+        
+        guard let navBarColour = UIColor(hexString: colourHexCode) else { fatalError()}
+        
+        navBar.barTintColor = navBarColour
+        
+        navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+        
+        navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
+        
+        searchBar.barTintColor = navBarColour
+        
+    }
+    
     
     @IBAction func additem(_ sender: UIBarButtonItem) {
         
@@ -80,11 +123,18 @@ class secoundTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let Cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
+         let Cell = super.tableView(tableView, cellForRowAt: indexPath)
+       // let Cell = tableView.dequeueReusableCell(withIdentifier: "TodoItemCell", for: indexPath)
         
         if let item = todoItems?[indexPath.row] {
         
         Cell.textLabel?.text =  item.title
+            if let colour =  UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)){
+             Cell.backgroundColor = colour
+             
+                Cell.textLabel?.textColor = (UIColor(contrastingBlackOrWhiteColorOn:colour, isFlat:true))
+            }
+           
         
         Cell.accessoryType  = item.done ?  .checkmark : .none
         }else {
@@ -115,6 +165,9 @@ class secoundTableViewController: UITableViewController {
                 print("Error Savinge done status\(error)")
             }
             tableView.reloadData()
+           
+            
+            
         }
  
         
@@ -125,24 +178,24 @@ class secoundTableViewController: UITableViewController {
     }
     
     
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            if let item = todoItems?[indexPath.row] {
-                
-                do{
-                    try realm.write {
-                        realm.delete(item)
-                                            }
-                    
-                }catch{
-                    print("Error Savinge done status\(error)")
-                }
-                
-            }
-
-            tableView.reloadData()
-        }
-    }
+//    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+////            if let item = todoItems?[indexPath.row] {
+////
+////                do{
+////                    try realm.write {
+////                        realm.delete(item)
+////                                            }
+////
+////                }catch{
+////                    print("Error Savinge done status\(error)")
+////                }
+////
+////            }
+////
+////            tableView.reloadData()
+//        }
+//    }
     
     
 
@@ -206,34 +259,60 @@ class secoundTableViewController: UITableViewController {
     }
     
     
+    override func DeletModel(at indexPath: IndexPath) {
+        if let item = todoItems?[indexPath.row] {
+            
+            do{
+                try realm.write {
+                    realm.delete(item)
+                }
+                
+            }catch{
+                print("Error Savinge done status\(error)")
+            }
+            
+        }
+
+    }
     
+    override func infoModel(at indexPath: IndexPath) {
+        pathToInfo = indexPath.row
+        performSegue(withIdentifier: "goToInfo", sender: self)
+    }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+       let destinationVC = segue.destination as! InfoViewController
+        destinationVC.Information = todoItems?[pathToInfo]
+        
+    }
     
 }
+
+
 
 //MARK: - Search function
 
 extension secoundTableViewController : UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        todoItems = todoItems?.filter("format: tilte CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
-        tableView.reloadData()
-
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        self.tableView.reloadData()
+        
     }
-
-
+    
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
             loadItems()
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
             }
-
+            
         }
     }
-
-
-}
     
+    
+}
+
+
 
